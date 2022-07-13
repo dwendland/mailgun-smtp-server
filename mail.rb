@@ -21,7 +21,8 @@ class MailgunSmtpd < MidiSmtpServer::Smtpd
     logger.debug("[#{ctx[:envelope][:from]}] for recipient(s): [#{ctx[:envelope][:to]}]...")
 
     data = {
-      to: ctx[:envelope][:to], 
+      to: ctx[:envelope][:to],
+      from: ctx[:envelope][:from],
       message: ctx[:message][:data]
     }
 
@@ -35,7 +36,7 @@ listen_simul = ENV['MG_SMTPD_SIMULATENOUS_CONNECTIONS'] || 4
 listen_options = ENV['MG_SMTPD_OPTIONS'] || {}
 
 printf "#{Time.now}: Starting MailgunSmtpd on #{listen_addr}:#{listen_port}...\n"
-server = MailgunSmtpd.new(listen_port, listen_addr, listen_simul, listen_options)
+server = MailgunSmtpd.new(ports: listen_port, hosts: listen_addr, max_connections: listen_simul) #, listen_options)
 
 server.start
 server.join
